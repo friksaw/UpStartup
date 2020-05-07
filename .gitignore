@@ -1,0 +1,20 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+*.lock
+
+# Dependency directories
+vk-hosting-config.json
+package-lock.json
+/node_modules
+
+# Optional npm cache directory
+.npm
+
+# Prod Bundle
+/bundle.zip
+/build
+
+.vscode
+.idea
