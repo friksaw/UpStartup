@@ -25,13 +25,16 @@ import Icon16Chevron from '@vkontakte/icons/dist/16/chevron';
 import { Textarea, File } from "@vkontakte/vkui";
 import Icon24Camera from '@vkontakte/icons/dist/24/camera';
 
-import HPlatform, { HMap, HMapMarker } from "react-here-map";
+import HPlatform, { HMap, HMapMarker, onTap } from "react-here-map";
+
+
 
 
 const MODAL_PAGE_NEWSTARTUP = 'newstartup';
 const MODAL_PAGE_STARTUPCARD1 = 'startupcard1';
 const MODAL_PAGE_STARTUPCARD2 = 'startupcard2';
 const MODAL_PAGE_STARTUPCARD3 = 'startupcard3';
+
 
 const app_id = 'UdRH6PlISTlADYsW6mzl';
 const api_key = '8pnCIzadhLos0MYDbSdpmtf5NpzQqUC';
@@ -171,6 +174,8 @@ this.onChange = this.onChange.bind(this);
         </ModalPage>
 
 
+
+
         <ModalPage dynamicContentHeight separator="show"
         id={MODAL_PAGE_STARTUPCARD1}
         onClose={this.modalBack}
@@ -188,7 +193,55 @@ this.onChange = this.onChange.bind(this);
           <Separator style={{ margin: '12px 0' }} />
           {<Header mode="secondary">Команда</Header>}
             <SimpleCell before={<Avatar size={48} src="https://sun1-19.userapi.com/9wTdHgHyF9QIJnKMhCBYHLXnfyNu63tgkegP7g/3lInrnOdS04.jpg" />} description="Программист">Игорь Фёдоров</SimpleCell>
-            <SimpleCell before={<Avatar size={48} src="https://sun9-4.userapi.com/c639723/v639723606/39ab/ENg4qVRiTxk.jpg" />} description="Аналитик">Artur Stambultsian</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun1-89.userapi.com/PLCnmMkC-ack6EIDsd9-IGWmWsTLUwcrR_haqQ/ibyxvMwUDKg.jpg" />} description="Аналитик">Artur Stambultsian</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-51.userapi.com/c852320/v852320714/1d580c/oZUzTvtYr10.jpg" />} description="Программист">Тома Носова</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-67.userapi.com/c850732/v850732154/15b2d4/IcJh9dRQKbk.jpg" />} description="Дизайнер">Саша Невзоров</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Сообщество проекта</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://s15.stc.all.kpcdn.net/share/i/12/10617822/inx960x640.jpg" />}>GAMEMAKERS COMUNITY</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Локация</Header>}
+          <Cell multiline asideContent={<Button before={<Icon24Place />} >Смотреть на карте</Button>}>
+            Новороссийск, пр-кт Дзержинского
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Дополнительные ссылки</Header>}
+            <SimpleCell multiline>
+              <InfoRow header="E-mail">
+                lestreng.begi@gmail.com
+              </InfoRow>
+            </SimpleCell>
+            <SimpleCell>
+              <InfoRow header="GitHub">
+                @daniiyang
+              </InfoRow>
+            </SimpleCell>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Button size="xl" mode="secondary">
+              Связаться
+            </Button>
+          </div>
+        </Group>
+        }</ModalPage>
+
+                <ModalPage dynamicContentHeight separator="show"
+        id={MODAL_PAGE_STARTUPCARD1}
+        onClose={this.modalBack}
+        header={
+        <ModalPageHeader
+        left={<PanelHeaderButton onClick={this.modalBack}><Icon24Cancel /></PanelHeaderButton>}
+        >GAMEMAKERS COMUNITY</ModalPageHeader>}>{
+
+        <Group
+          header={<Header mode="secondary">Описание</Header>}
+          separator="show" >
+          <Cell multiline>
+            Занимаемся очень классной игрой с мистическим сюжетом и мрачной атмосферой. В команде есть 2 программиста, дизайнер и аналитик. Мы нереально сплоченная и дружная каманда, присоединяйся!
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Команда</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun1-19.userapi.com/9wTdHgHyF9QIJnKMhCBYHLXnfyNu63tgkegP7g/3lInrnOdS04.jpg" />} description="Программист">Игорь Фёдоров</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun1-89.userapi.com/PLCnmMkC-ack6EIDsd9-IGWmWsTLUwcrR_haqQ/ibyxvMwUDKg.jpg" />} description="Аналитик">Artur Stambultsian</SimpleCell>
             <SimpleCell before={<Avatar size={48} src="https://sun9-51.userapi.com/c852320/v852320714/1d580c/oZUzTvtYr10.jpg" />} description="Программист">Тома Носова</SimpleCell>
             <SimpleCell before={<Avatar size={48} src="https://sun9-67.userapi.com/c850732/v850732154/15b2d4/IcJh9dRQKbk.jpg" />} description="Дизайнер">Саша Невзоров</SimpleCell>
           <Separator style={{ margin: '12px 0' }} />
@@ -356,27 +409,24 @@ this.onChange = this.onChange.bind(this);
             <Panel id='StartupList' >
             <PanelHeader separator="hide" >UPSTARTUP</PanelHeader>
                 <Gallery
-                  slideWidth="90%"
+                  slideWidth="100%"
                   style={{ height: 150 }}
                   bullets="dark">
                   <div style={{
-                          backgroundColor: '#000',
-                          backgroundImage: 'url(https://sun9-53.userapi.com/m-ygfKiLKLkEMAQVTToO2l9LyC6GgqWoGXpw8A/-zm6_XLECTU.jpg)',
-                          backgroundPosition: 'right bottom',
-                          backgroundSize: 340,
+                          backgroundImage: 'url(https://sun9-68.userapi.com/EDVTQTSZEiWskeIPsyz02YME3-FXUkgvopzW8A/NX_-ruBBsAw.jpg)',
+                          backgroundPosition: 'center',
+                          backgroundSize: 600,
                           backgroundRepeat: 'no-repeat', }} />
                   <div style={{
-                          backgroundColor: '#000',
-                          backgroundImage: 'url(https://sun9-53.userapi.com/m-ygfKiLKLkEMAQVTToO2l9LyC6GgqWoGXpw8A/-zm6_XLECTU.jpg)',
-                          backgroundPosition: 'right bottom',
-                          backgroundSize: 340,
+                          backgroundImage: 'url(https://sun9-51.userapi.com/HA70tcCC6Jp2CcQe9OpjxZllSdNmW3o0uqJYKQ/5j8h9pHTv2E.jpg)',
+                          backgroundPosition: 'center',
+                          backgroundSize: 600,
                           backgroundRepeat: 'no-repeat',
                         }} />
                   <div style={{
-                          backgroundColor: '#000',
-                          backgroundImage: 'url(https://sun9-53.userapi.com/m-ygfKiLKLkEMAQVTToO2l9LyC6GgqWoGXpw8A/-zm6_XLECTU.jpg)',
-                          backgroundPosition: 'right bottom',
-                          backgroundSize: 340,
+                          backgroundImage: 'url(https://sun2-3.userapi.com/IFTAOgocmJB4DsCudLMZY7YCuM7G2GVIblKFMA/rfMYZlREoUc.jpg)',
+                          backgroundPosition: 'center',
+                          backgroundSize: 600,
                           backgroundRepeat: 'no-repeat',
                         }} />
                 </Gallery>
@@ -406,7 +456,7 @@ this.onChange = this.onChange.bind(this);
                       Мы пишем биты, тексты - все сами. Хотим продвигать искусство рэп-культуры в массы, выпускать как можно больше релизов и совершенствоваться, чтобы стать профессионалами. Следующая цель - студия. Присоединяйся!</Cell>
                       <Banner
                       subheader="Хотим клип. Нужен оператор и по совместительству хороший монтажер."
-                      actions={<Button href="https://vk.com"> Откликнуться </Button>}  />
+                      actions={<Button href="vk://m.vk.com/gs_beatsstore"> Откликнуться </Button>}  />
                     </Card>
                     <Card size="l" >
                       <Cell multiline
@@ -438,7 +488,7 @@ this.onChange = this.onChange.bind(this);
 
 
 
-        <View activePanel='StartupMap' id='StartupMap'  >
+        <View activePanel='StartupMap' id='StartupMap' modal={modal} >
             <Panel id='StartupMap' >
 	    <PanelHeader>UPSTARTUP</PanelHeader>
             <HPlatform
@@ -455,10 +505,9 @@ this.onChange = this.onChange.bind(this);
                 style={{
                   height: "511px",
                   width: "100%",
-                }}
-                mapOptions={{ center: { lat: 44.723566, lng: 37.768678 }, zoom: 14 }}
-              >
-                <HMapMarker coords={coords1} icon={icon1} />
+                  }}
+                mapOptions={{ center: { lat: 44.723566, lng: 37.768678 }, zoom: 14 }} >
+                <HMapMarker onTap={() => {this.setActiveModal(MODAL_PAGE_STARTUPCARD1)}} coords={coords1} icon={icon1} />
                 <HMapMarker coords={coords2} icon={icon2} />
                 <HMapMarker coords={coords3} icon={icon3} />
               </HMap>
