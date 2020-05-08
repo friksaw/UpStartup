@@ -1,36 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import bridge from '@vkontakte/vk-bridge';
+import React from 'react';
+import PropTypes from 'prop-types';
 import '@vkontakte/vkui/dist/vkui.css';
 
 //импорты для общего оформления юи типа заоловка и нижней полосочки
-import {View, PanelHeader, Panel, Epic, Root, Tabbar, ModalRoot, TabbarItem, ConfigProvider} from "@vkontakte/vkui";
+import {View, PanelHeader, Panel, Epic, Tabbar, ModalRoot, TabbarItem } from "@vkontakte/vkui";
 import Icon28Users3Outline from '@vkontakte/icons/dist/28/users_3_outline';
-import Icon28FavoriteOutline from '@vkontakte/icons/dist/28/favorite_outline';
 import Icon28PlaceOutline from '@vkontakte/icons/dist/28/place_outline';
 import Icon28UserOutline from '@vkontakte/icons/dist/28/user_outline';
 
-import StartupMap from './panels/epics/StartupMap';
+
 
 //импорты для модальных окон
-import { Button, Placeholder, FormLayout, Group, ModalPage, ModalPageHeader, PanelHeaderButton, SelectMimicry, FormLayoutGroup, Checkbox, Input } from "@vkontakte/vkui";
+import { InfoRow, SimpleCell, Separator, Header, Div, Button, Placeholder, FormLayout, Group, ModalPage, ModalPageHeader, PanelHeaderButton, FormLayoutGroup, Checkbox, Input } from "@vkontakte/vkui";
 import Icon56FireOutline from '@vkontakte/icons/dist/56/fire_outline';
 import Icon24Cancel from '@vkontakte/icons/dist/24/cancel';
 import Icon24Done from '@vkontakte/icons/dist/24/done';
+import Icon24Place from '@vkontakte/icons/dist/24/place';
 
 //импорты для панели стартаплист
 import { Gallery, Search, CardGrid, Card, Cell, Avatar, Banner, Caption } from "@vkontakte/vkui";
-import Icon24DismissDark from '@vkontakte/icons/dist/24/dismiss_dark';
 import Icon16Chevron from '@vkontakte/icons/dist/16/chevron';
 
 //импорты для форм
 import { Textarea, File } from "@vkontakte/vkui";
 import Icon24Camera from '@vkontakte/icons/dist/24/camera';
 
+import HPlatform, { HMap, HMapMarker } from "react-here-map";
+
 
 const MODAL_PAGE_NEWSTARTUP = 'newstartup';
 const MODAL_PAGE_STARTUPCARD1 = 'startupcard1';
 const MODAL_PAGE_STARTUPCARD2 = 'startupcard2';
 const MODAL_PAGE_STARTUPCARD3 = 'startupcard3';
+
+const app_id = 'UdRH6PlISTlADYsW6mzl';
+const api_key = '8pnCIzadhLos0MYDbSdpmtf5NpzQqUC';
+const api_code = 'lfrrTheP9nBedeJyy1NtIA';
+
+const coords1 = { lat: 44.6832104, lng: 37.7794034 };
+const coords2 = { lat: 44.7306551, lng: 37.7425826 };
+const coords3 = { lat: 44.734003, lng: 37.7443383 };
+
+const icon1 =
+  '<svg width="70" height="70" ' +
+  'xmlns="http://www.w3.org/2000/svg">' +
+  '<rect stroke="white" fill="#1b468d" x="1" y="1" width="22" ' +
+  'height="22" /><text x="12" y="18" font-size="12pt" ' +
+  'font-family="Arial" font-weight="bold" text-anchor="middle" ' +
+  'fill="white"></text></svg>';
+
+const icon2 =
+  '<svg width="70" height="70" ' +
+  'xmlns="http://www.w3.org/2000/svg">' +
+  '<rect stroke="white" fill="#1b468d" x="1" y="1" width="22" ' +
+  'height="22" /><text x="12" y="18" font-size="12pt" ' +
+  'font-family="Arial" font-weight="bold" text-anchor="middle" ' +
+  'fill="white"></text></svg>';
+
+const icon3 =
+  '<svg width="70" height="70" ' +
+  'xmlns="http://www.w3.org/2000/svg">' +
+  '<rect stroke="white" fill="#1b468d" x="1" y="1" width="22" ' +
+  'height="22" /><text x="12" y="18" font-size="12pt" ' +
+  'font-family="Arial" font-weight="bold" text-anchor="middle" ' +
+  'fill="white"></text></svg>';
 
 
 class App extends React.Component {
@@ -40,7 +73,11 @@ class App extends React.Component {
     this.state = {
       name: '',
       description: '',
-      email: '',
+      comunity: '',
+      image: '',
+      place: '',
+      comand: '',
+      extralinks: '',
       activeStory: 'StartupList',
       activePanel: 'StartupList',
       activeModal: null,
@@ -93,7 +130,7 @@ this.onChange = this.onChange.bind(this);
   }
 
   render () {
-    const { email, name, description } = this.state;
+    const { comunity, name, description, image, place, comand, extralinks } = this.state;
 
     const modal = (
       <ModalRoot
@@ -111,32 +148,76 @@ this.onChange = this.onChange.bind(this);
         right={<PanelHeaderButton onClick={this.modalBack}>Готово<Icon24Done /></PanelHeaderButton>}
         >Ваш стартап</ModalPageHeader>}>
         <FormLayout>
+            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+              <Avatar size={150} mode="image" style={{ marginTop: 20 }} src={image} />
+              <File name="image" value={image} onChange={this.onChange} before={<Icon24Camera />} controlSize="l" style={{ marginTop: 20 }} >
+                Загрузите фотографию проекта
+              </File>
+            </div>
             <Input top="Название проекта"  name="name" value={name} onChange={this.onChange}/>
             <Textarea top="Краткое описание проекта" name="description" value={description} onChange={this.onChange}/>
-            <Avatar size={150} />
-            <File before={<Icon24Camera />} controlSize="l">
-                Загрузите фотографию проекта
-            </File>
-            <Input
-              type="email"
-              top="E-mail"
-              name="email"
-              value={email}
-              onChange={this.onChange} />
-              {console.log(this.state.myProjectName)}
+            <FormLayoutGroup top="В каком районе вы работаете над проектом?" bottom="Адрес пишется в формате: город, улица.">
+              <Input name="place" value={place} onChange={this.onChange} />
+            </FormLayoutGroup>
+            <Input top="Сообщество проекта"  name="comunity" value={comunity} onChange={this.onChange}/>
+            <FormLayoutGroup top="Ссылки на участников проекта" bottom="Участники указываются в формате: ссылка - роль.">
+              <Input name="comand" value={comand} onChange={this.onChange} />
+            </FormLayoutGroup>
+            <FormLayoutGroup top="Дополнительные cсылки" bottom="Ссылки указываются в формате: ссылка - имя (Пример: https://github.com/daniiyang - GitHub)">
+              <Input name="extralinks" value={extralinks} onChange={this.onChange} />
+            </FormLayoutGroup>
             <Checkbox>Согласен на публикацию указанной информации</Checkbox>
           </FormLayout>
         </ModalPage>
 
-        <ModalPage dynamicContentHeight
+
+        <ModalPage dynamicContentHeight separator="show"
         id={MODAL_PAGE_STARTUPCARD1}
         onClose={this.modalBack}
         header={
         <ModalPageHeader
         left={<PanelHeaderButton onClick={this.modalBack}><Icon24Cancel /></PanelHeaderButton>}
-        >GAMEMAKERS COMUNITY</ModalPageHeader>}>
+        >GAMEMAKERS COMUNITY</ModalPageHeader>}>{
 
-        </ModalPage>
+        <Group
+          header={<Header mode="secondary">Описание</Header>}
+          separator="show" >
+          <Cell multiline>
+            Занимаемся очень классной игрой с мистическим сюжетом и мрачной атмосферой. В команде есть 2 программиста, дизайнер и аналитик. Мы нереально сплоченная и дружная каманда, присоединяйся!
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Команда</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun1-19.userapi.com/9wTdHgHyF9QIJnKMhCBYHLXnfyNu63tgkegP7g/3lInrnOdS04.jpg" />} description="Программист">Игорь Фёдоров</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-4.userapi.com/c639723/v639723606/39ab/ENg4qVRiTxk.jpg" />} description="Аналитик">Artur Stambultsian</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-51.userapi.com/c852320/v852320714/1d580c/oZUzTvtYr10.jpg" />} description="Программист">Тома Носова</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-67.userapi.com/c850732/v850732154/15b2d4/IcJh9dRQKbk.jpg" />} description="Дизайнер">Саша Невзоров</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Сообщество проекта</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://s15.stc.all.kpcdn.net/share/i/12/10617822/inx960x640.jpg" />}>GAMEMAKERS COMUNITY</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Локация</Header>}
+          <Cell multiline asideContent={<Button before={<Icon24Place />} >Смотреть на карте</Button>}>
+            Новороссийск, пр-кт Дзержинского
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Дополнительные ссылки</Header>}
+            <SimpleCell multiline>
+              <InfoRow header="E-mail">
+                lestreng.begi@gmail.com
+              </InfoRow>
+            </SimpleCell>
+            <SimpleCell>
+              <InfoRow header="GitHub">
+                @daniiyang
+              </InfoRow>
+            </SimpleCell>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Button size="xl" mode="secondary">
+              Связаться
+            </Button>
+          </div>
+        </Group>
+        }</ModalPage>
 
         <ModalPage dynamicContentHeight
         id={MODAL_PAGE_STARTUPCARD2}
@@ -145,7 +226,36 @@ this.onChange = this.onChange.bind(this);
         <ModalPageHeader
         left={<PanelHeaderButton onClick={this.modalBack}><Icon24Cancel /></PanelHeaderButton>}
         >GROVE STREET BEATS</ModalPageHeader>}>
-
+        <Group
+          header={<Header mode="secondary">Описание</Header>}
+          separator="show" >
+          <Cell multiline>
+            Мы пишем биты, тексты - все сами. Хотим продвигать искусство рэп-культуры в массы, выпускать как можно больше релизов и совершенствоваться, чтобы стать профессионалами. Следующая цель - студия. Присоединяйся!          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Команда</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun9-33.userapi.com/c851136/v851136828/1697df/VpSS_Z-LTLs.jpg" />} description="Биг Босс">Андрей Ленский</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun9-5.userapi.com/c206724/v206724265/10e710/n6MwqeiqjBQ.jpg" />} description="Битмейкер">Александр Колесов</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Сообщество проекта</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun1-97.userapi.com/bW5TLfXmUMsKxelWo78cc7y7Pcj7exE9rUSIeA/77G3tgnyVlI.jpg" />}>Grove Street Beats Store [GSB]</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Локация</Header>}
+          <Cell multiline asideContent={<Button before={<Icon24Place />} >Смотреть на карте</Button>}>
+            Новороссийск, улица Видова
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Дополнительные ссылки</Header>}
+            <SimpleCell multiline>
+              <InfoRow header="Telegram">
+                @Shreker666
+              </InfoRow>
+            </SimpleCell>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Button size="xl" mode="secondary">
+              Связаться
+            </Button>
+          </div>
+        </Group>
         </ModalPage>
 
         <ModalPage dynamicContentHeight
@@ -155,10 +265,42 @@ this.onChange = this.onChange.bind(this);
         <ModalPageHeader
         left={<PanelHeaderButton onClick={this.modalBack}><Icon24Cancel /></PanelHeaderButton>}
         >СНИМАЕМ КИНО</ModalPageHeader>}>
-
+        <Group
+          header={<Header mode="secondary">Описание</Header>}
+          separator="show" >
+          <Cell multiline>
+            Мы снимаем короткометражки по произведениям русской классической литературы. Только личное оборудование, играем и пишем сценарий все вместе, своими силами. Присоединяйся!          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Команда</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun9-2.userapi.com/c206816/v206816369/20ae2/VJ1i_sji5Y8.jpg" />} description="Сценарист">Саша Андреева</SimpleCell>
+            <SimpleCell before={<Avatar size={48} src="https://sun1-83.userapi.com/lZXlh-GfM3sjTZ897Pdm2IOAl6db2flAL4vvkw/-YfwHP474LU.jpg" />} description="Оператор">Анатолий Серов</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Сообщество проекта</Header>}
+            <SimpleCell before={<Avatar size={48} src="https://sun9-4.userapi.com/c856124/v856124353/1154ae/OzKHsIFwM4k.jpg" />}>RR Cinema</SimpleCell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Локация</Header>}
+          <Cell multiline asideContent={<Button before={<Icon24Place />} >Смотреть на карте</Button>}>
+            Новороссийск, улица Анапское шоссе
+          </Cell>
+          <Separator style={{ margin: '12px 0' }} />
+          {<Header mode="secondary">Дополнительные ссылки</Header>}
+            <SimpleCell multiline>
+              <InfoRow header="E-mail">
+                rrcinema.ruci@protonmail.com
+              </InfoRow>
+            </SimpleCell>
+            <SimpleCell>
+              <InfoRow header="Instagram">
+                @rrcinema.ruci
+              </InfoRow>
+            </SimpleCell>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <Button size="xl" mode="secondary">
+              Связаться
+            </Button>
+          </div>
+        </Group>
         </ModalPage>
-
-
       </ModalRoot>
     );
 
@@ -186,6 +328,30 @@ this.onChange = this.onChange.bind(this);
         </Tabbar>
       }>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <View activePanel={this.state.activePanel} id='StartupList' modal={modal}  >
             <Panel id='StartupList' >
             <PanelHeader separator="hide" >UPSTARTUP</PanelHeader>
@@ -199,8 +365,20 @@ this.onChange = this.onChange.bind(this);
                           backgroundPosition: 'right bottom',
                           backgroundSize: 340,
                           backgroundRepeat: 'no-repeat', }} />
-                  <div style={{ background: 'linear-gradient(135deg, #ff716c, #ff6e72, #fa6883, #f16594, #e465a3)' }} />
-                  <div style={{ background: 'linear-gradient(135deg, #f16594, #e465a3, #c06bb9, #9172c5, #5b77c4)' }} />
+                  <div style={{
+                          backgroundColor: '#000',
+                          backgroundImage: 'url(https://sun9-53.userapi.com/m-ygfKiLKLkEMAQVTToO2l9LyC6GgqWoGXpw8A/-zm6_XLECTU.jpg)',
+                          backgroundPosition: 'right bottom',
+                          backgroundSize: 340,
+                          backgroundRepeat: 'no-repeat',
+                        }} />
+                  <div style={{
+                          backgroundColor: '#000',
+                          backgroundImage: 'url(https://sun9-53.userapi.com/m-ygfKiLKLkEMAQVTToO2l9LyC6GgqWoGXpw8A/-zm6_XLECTU.jpg)',
+                          backgroundPosition: 'right bottom',
+                          backgroundSize: 340,
+                          backgroundRepeat: 'no-repeat',
+                        }} />
                 </Gallery>
                 <Group separator="hide" mode="secondary">
                   <Search/>
@@ -228,7 +406,7 @@ this.onChange = this.onChange.bind(this);
                       Мы пишем биты, тексты - все сами. Хотим продвигать искусство рэп-культуры в массы, выпускать как можно больше релизов и совершенствоваться, чтобы стать профессионалами. Следующая цель - студия. Присоединяйся!</Cell>
                       <Banner
                       subheader="Хотим клип. Нужен оператор и по совместительству хороший монтажер."
-                      actions={<Button href="https://m.vk.com/gs_beatsstore"> Откликнуться </Button>}  />
+                      actions={<Button href="https://vk.com"> Откликнуться </Button>}  />
                     </Card>
                     <Card size="l" >
                       <Cell multiline
@@ -248,9 +426,56 @@ this.onChange = this.onChange.bind(this);
                 </Group>
             </Panel>
         </View>
+
+
+
+
+
+
+
+
+
+
+
+
         <View activePanel='StartupMap' id='StartupMap'  >
-            <StartupMap id='StartupMap' go={this.go} />
+            <Panel id='StartupMap' >
+	    <PanelHeader>UPSTARTUP</PanelHeader>
+            <HPlatform
+              app_id={app_id}
+              app_code={api_code}
+              apikey={api_key}
+              useCIT
+              useHTTPS
+              includeUI
+              includePlaces
+              interactive
+            >
+              <HMap
+                style={{
+                  height: "511px",
+                  width: "100%",
+                }}
+                mapOptions={{ center: { lat: 44.723566, lng: 37.768678 }, zoom: 14 }}
+              >
+                <HMapMarker coords={coords1} icon={icon1} />
+                <HMapMarker coords={coords2} icon={icon2} />
+                <HMapMarker coords={coords3} icon={icon3} />
+              </HMap>
+            </HPlatform>
+    </Panel>
         </View>
+
+
+
+
+
+
+
+
+
+
+
 
 
 
