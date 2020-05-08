@@ -28,13 +28,10 @@ import Icon24Camera from '@vkontakte/icons/dist/24/camera';
 import HPlatform, { HMap, HMapMarker, onTap } from "react-here-map";
 
 
-
-
 const MODAL_PAGE_NEWSTARTUP = 'newstartup';
 const MODAL_PAGE_STARTUPCARD1 = 'startupcard1';
 const MODAL_PAGE_STARTUPCARD2 = 'startupcard2';
 const MODAL_PAGE_STARTUPCARD3 = 'startupcard3';
-
 
 const app_id = 'UdRH6PlISTlADYsW6mzl';
 const api_key = '8pnCIzadhLos0MYDbSdpmtf5NpzQqUC';
@@ -86,7 +83,6 @@ class App extends React.Component {
       activeModal: null,
       modalHistory: []
     };
-
 
 
     this.onStoryChange = this.onStoryChange.bind(this);
@@ -172,8 +168,6 @@ this.onChange = this.onChange.bind(this);
             <Checkbox>Согласен на публикацию указанной информации</Checkbox>
           </FormLayout>
         </ModalPage>
-
-
 
 
         <ModalPage dynamicContentHeight separator="show"
@@ -381,30 +375,6 @@ this.onChange = this.onChange.bind(this);
         </Tabbar>
       }>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <View activePanel={this.state.activePanel} id='StartupList' modal={modal}  >
             <Panel id='StartupList' >
             <PanelHeader separator="hide" >UPSTARTUP</PanelHeader>
@@ -477,17 +447,6 @@ this.onChange = this.onChange.bind(this);
             </Panel>
         </View>
 
-
-
-
-
-
-
-
-
-
-
-
         <View activePanel='StartupMap' id='StartupMap' modal={modal} >
             <Panel id='StartupMap' >
 	    <PanelHeader>UPSTARTUP</PanelHeader>
@@ -514,20 +473,6 @@ this.onChange = this.onChange.bind(this);
             </HPlatform>
     </Panel>
         </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         <View activePanel='MyStartup' id='MyStartup' modal={modal} >
             <Panel id='MyStartup'  >
