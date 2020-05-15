@@ -29,11 +29,11 @@ import Icon24Camera from '@vkontakte/icons/dist/24/camera';
 //импорты для карт
 import { HPlatform, HMap, HMapMarker, onTap } from "react-here-map";
 
-const id_checker = null;
-const checkModalpageStartupDataID = null;
+
+
 
 const MODAL_PAGE_NEWSTARTUP = 'newstartup';
-const MODAL_PAGE_STARTUPCARD = 'startupcard';
+
 
 
 
@@ -130,9 +130,7 @@ class App extends React.Component {
     this.setState({ search: e.target.value });
   }
 
-  modalpageChanges(e) {
-    checkModalpageStartupDataID = 1;
-  }
+
 
   onNavClick(e) {
     const activePanel = e.currentTarget.dataset.to;
@@ -148,7 +146,25 @@ class App extends React.Component {
 
 
 
+ //ДЛЯ ПОДПИСИ???? ТУДУ: ПОНЯТЬ
+    parseQueryString = (string) => {
+        return string.slice(1).split('&')
+            .map((queryParam) => {
+                let kvp = queryParam.split('=');
+                return {key: kvp[0], value: kvp[1]}
+            })
+            .reduce((query, kvp) => {
+                query[kvp.key] = kvp.value;
+                return query
+            }, {})
+    };
+
+
   render () {
+  //ДЛЯ ПОДПИСИ???? ТУДУ: ПОНЯТЬ
+    const queryParams = this.parseQueryString(window.location.search);
+    const hashParams = this.parseQueryString(window.location.hash);
+
     const { comunity, name, description, image, place, comand, extralinks } = this.state;
 
     const modal = (
@@ -196,47 +212,48 @@ class App extends React.Component {
 
 
     return (
-      <Epic activeStory={this.state.activeStory} tabbar={
-        <Tabbar>
-          <TabbarItem
-            onClick={this.onStoryChange}
-            selected={this.state.activeStory === 'StartupListPanel'}
-            data-story="StartupListPanel"
-            text="Список стартапов"
-          ><Icon28Users3Outline /></TabbarItem>
-          <TabbarItem
-            onClick={this.onStoryChange}
-            selected={this.state.activeStory === 'UserStartup'}
-            data-story="UserStartup"
-            text="Мой стартап"
-          ><Icon28UserOutline /></TabbarItem>
-        </Tabbar>
-      }>
+        <Epic activeStory={this.state.activeStory} tabbar={
+            <Tabbar>
+                <TabbarItem
+                    onClick={this.onStoryChange}
+                    selected={this.state.activeStory === 'StartupListPanel'}
+                    data-story="StartupListPanel"
+                    text="Список стартапов"
+                ><Icon28Users3Outline /></TabbarItem>
+                <TabbarItem
+                    onClick={this.onStoryChange}
+                    selected={this.state.activeStory === 'UserStartup'}
+                    data-story="UserStartup"
+                    text="Мой стартап"
+                ><Icon28UserOutline /></TabbarItem>
+            </Tabbar>
+        }>
+
         <View activePanel={this.state.activePanel} id='StartupListPanel' modal={modal}  >
             <Panel id='StartupListPanel' >
             <React.Fragment>
             <PanelHeader separator="hide" >UPSTARTUP</PanelHeader>
                 <Gallery
-                  slideWidth="100%"
-                  style={{ height: 150 }}
-                  bullets="dark">
-                  <div style={{
+                    slideWidth="100%"
+                    style={{ height: 150 }}
+                    bullets="dark">
+                    <div style={{
                           backgroundImage: 'url(https://sun9-15.userapi.com/6m9K_Mly-yBYE9KOwgmLxzd5QjKECnXEmxNqUw/Xa4YCSCM5o8.jpg)',
                           backgroundPosition: 'center',
                           backgroundSize: '100%',
                           backgroundRepeat: 'no-repeat', }} />
-                  <div style={{
+                    <div style={{
                           backgroundImage: 'url(https://sun9-41.userapi.com/qxbRSsy0QIwTrBm57Uf3624HXGt52UEBavDcug/x70RGQcgGzY.jpg)',
                           backgroundPosition: 'center',
                           backgroundSize: '100%',
                           backgroundRepeat: 'no-repeat',
                         }} />
-                  <div style={{
+                    <div style={{
                           backgroundImage: 'url(https://sun1-84.userapi.com/klx3YBZwlRQwQoc9YmOpwfHPaRsbgsvS4VwS0Q/WQ-ymLMwj_w.jpg)',
                           backgroundPosition: 'center',
                           backgroundSize: '100%',
                           backgroundRepeat: 'no-repeat',
-                        }} />
+                    }} />
                 </Gallery>
                 <Group separator="hide" mode="secondary">
                   <Search value={this.state.search} onChange={this.onChange} icon={<Icon24Filter />} after={null}/>

@@ -7,10 +7,13 @@ import App from './App';
 import * as eruda from 'eruda';
 import * as erudaCode from 'eruda-code';
 import * as erudaDom from 'eruda-dom';
+import registerServiceWorker from './sw';
 
 
 // Init VK  Mini App
 bridge.send('VKWebAppInit');
+
+registerServiceWorker();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 if (process.env.NODE_ENV === 'development') {
