@@ -1,5 +1,5 @@
 {
-  "name": "testapp",
+  "name": "UpStartup",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -21,8 +21,9 @@
   "dependencies": {
     "@vkontakte/icons": "^1.20.2",
     "@vkontakte/vk-bridge": "^2.1.2",
-    "@vkontakte/vkui": "^3.8.2",
+    "@vkontakte/vkui": "^3.9.2",
     "babel-eslint": "^10.0.3",
+    "babel-jest": "^26.0.1",
     "chalk": "^2.4.2",
     "core-js": "^3.1.4",
     "eruda": "^2.2.0",
@@ -30,7 +31,7 @@
     "eruda-dom": "^2.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.9.0",
+    "react-dom": "^16.13.1",
     "react-here-map": "^3.1.0-0"
   },
   "browserslist": {
