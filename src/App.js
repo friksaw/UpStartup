@@ -18,7 +18,7 @@ import Icon24Place from '@vkontakte/icons/dist/24/place';
 import Icon24Back from '@vkontakte/icons/dist/24/back';
 
 //импорты для панели стартаплист
-import { Gallery, Search, CardGrid, Card, Cell, Avatar, Banner, Caption, List } from "@vkontakte/vkui";
+import { Gallery, Search, CardGrid, Card, Cell, Avatar, Banner, Caption, List, Headline } from "@vkontakte/vkui";
 import Icon16Chevron from '@vkontakte/icons/dist/16/chevron';
 import Icon24Filter from '@vkontakte/icons/dist/24/filter';
 
@@ -34,27 +34,27 @@ import { HPlatform, HMap, HMapMarker, onTap } from "react-here-map";
 
 const MODAL_PAGE_NEWSTARTUP = 'newstartup';
 
-
+var startupIdToSeeFullInfo = 0;
 
 
 const startups = [
-        {id: 1, img: "https://sun1-97.userapi.com/bW5TLfXmUMsKxelWo78cc7y7Pcj7exE9rUSIeA/77G3tgnyVlI.jpg",
+        {id: 0, img: "https://sun1-97.userapi.com/bW5TLfXmUMsKxelWo78cc7y7Pcj7exE9rUSIeA/77G3tgnyVlI.jpg",
                 name: "GROVE STREET BEATS",
                 description: "Мы пишем биты, тексты - все сами. Хотим продвигать искусство рэп-культуры в массы, выпускать как можно больше релизов и совершенствоваться, чтобы стать профессионалами. Следующая цель - студия. Присоединяйся!",
                 ad: ["Хотим клип. Нужен оператор, по совместительству хороший монтажер.", null, null],
-                button_href: "vk://m.vk.com/gs_beatsstore",
+                vk_community_link: "vk://m.vk.com/gs_beatsstore",
                 team: "t"},
-        {id: 2, img: "https://s15.stc.all.kpcdn.net/share/i/12/10617822/inx960x640.jpg",
+        {id: 1, img: "https://s15.stc.all.kpcdn.net/share/i/12/10617822/inx960x640.jpg",
                 name: "GAMEMAKERS COMUNITY",
                 description: "Занимаемся очень классной игрой с мистическим сюжетом и мрачной атмосферой. В команде есть 2 программиста, художник и саунддизайнер. Мы нереально сплоченная и дружная каманда, присоединяйся!",
                 ad: ["Нужен актер озвучки для характерного отрицательного персонажа. Хрипотца приветствуется", null, null],
-                button_href: "vk://m.vk.com/daniiyang_group",
+                vk_community_link: "vk://m.vk.com/daniiyang_group",
                 team: "t"},
-        {id: 3, img: "https://tvkinoradio.ru/upload/images/Article/36/6d/e3/366de36ed28e0a40da946b34335328ba.jpg",
+        {id: 2, img: "https://tvkinoradio.ru/upload/images/Article/36/6d/e3/366de36ed28e0a40da946b34335328ba.jpg",
                 name: "СНИМАЕМ КИНО",
                 description: "Мы снимаем короткометражки по произведениям русской классической литературы. Только личное оборудование, играем и пишем сценарий все вместе, своими силами. Присоединяйся!",
                 ad: ["Нужен Ленский - молодой человек 18-23 года с темными волнистыми волосами.", "Нужен композитор саунда на пиано.", "Нужен костюм Петра-1."],
-                button_href: "vk://m.vk.com/daniiyang_group",
+                vk_community_link: "vk://m.vk.com/daniiyang_group",
                 team: "t"},
       ];
 
@@ -124,7 +124,7 @@ class App extends React.Component {
     });
 
  };
-  onChange(e) {
+  onChange(e, id) {
     const { name, value } = e.currentTarget;
     this.setState({ [name]: value });
     this.setState({ search: e.target.value });
@@ -132,12 +132,16 @@ class App extends React.Component {
 
 
 
-  onNavClick(e) {
+  onNavClick(id, e) {
+    const activePanel = e.currentTarget.dataset.to;
+    this.setState({ activePanel });
+    startupIdToSeeFullInfo = id;
+    }
+
+  onNavClickBack(e) {
     const activePanel = e.currentTarget.dataset.to;
     this.setState({ activePanel });
     }
-
-
 
   get startup_search () {
       const search = this.state.search.toLowerCase();
@@ -179,7 +183,7 @@ class App extends React.Component {
         header={
         <ModalPageHeader
         left={<PanelHeaderButton onClick={this.modalBack}><Icon24Cancel /></PanelHeaderButton>}
-        right={<PanelHeaderButton onClick={this.modalBack}>Готово<Icon24Done /></PanelHeaderButton>}
+        right={<PanelHeaderButton onClick={this.modalBack}><Icon24Done /></PanelHeaderButton>}
         >Ваш стартап</ModalPageHeader>}>
         <FormLayout>
             <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -260,35 +264,30 @@ class App extends React.Component {
                   <CardGrid>
                     {this.startup_search.length > 0 &&
                     <List> {this.startup_search.map(startups =>
-                        <Card key={startups.id} size="l" >
-                          <Cell multiline
-                          onClick={this.onNavClick}
+                        <Card key={startups.id} id={startups.id} size="l" >
+                          <Cell key={startups.id}
+                          id={startups.id}
+                          multiline
+                          onClick={(e) => this.onNavClick(startups.id, e)}
                           data-to="fullStartupPanel"
                           asideContent={<Icon16Chevron />}
-                          before={<Avatar size={130} mode="image" src={startups.img} />}
-                          >{<Caption level="1" weight="heavy" caps style={{ marginBottom: 16 }}>{startups.name}</Caption>}
+                          >{<Caption level="1" weight="heavy" caps style={{ display: "flex", justifyContent: "center", marginBottom: 12 }} >{startups.name}</Caption>}
+                          {<Avatar mode="image" style={{ display: "flex", justifyContent: "center", minHeight: "200px", minWidth: "200px", marginBottom: 12 }} src={startups.img} />}
                           {startups.description}</Cell>
                           {startups.ad[0] ?
                               <Banner key={startups.id}
                               subheader={startups.ad[0]}
-                              actions={<Button href={startups.button_href}> Откликнуться </Button>}  /> : null }
+                              actions={<Button href={startups.vk_community_link}>Откликнуться</Button>}  /> : null }
                           {startups.ad[1] ?
                               <Banner key={startups.id}
                               subheader={startups.ad[1]}
-                              actions={<Button href={startups.button_href}> Откликнуться </Button>}  /> : null }
+                              actions={<Button href={startups.vk_community_link}>Откликнуться</Button>}  /> : null }
                           {startups.ad[2] ?
                               <Banner key={startups.id}
                                subheader={startups.ad[2]}
-                               actions={<Button href={startups.button_href}> Откликнуться </Button>}  /> : null }
+                               actions={<Button href={startups.vk_community_link}>Откликнуться</Button>}  /> : null }
                         </Card> )}
-                    </List> }
-
-
-
-
-
-
-
+                    </List>  }
                   </CardGrid>
                 </Group>
             </React.Fragment>
@@ -296,22 +295,23 @@ class App extends React.Component {
 
 
 
-            <Panel id="fullStartupPanel">
+            <Panel id="fullStartupPanel"  >
             <PanelHeader
-            left={<Icon24Back onClick={this.onNavClick} data-to="StartupListPanel" />}
-            >{this.state.StartupList[0]}</PanelHeader>
+            left={<Icon24Back onClick={() => this.setState({ activePanel: 'StartupListPanel' })}/>}
+            >{startups[startupIdToSeeFullInfo].name}</PanelHeader>
                 <Group
                   header={<Header mode="secondary">Описание</Header>}
                   separator="show" >
                   <Cell multiline>
-                    Мы снимаем короткометражки по произведениям русской классической литературы. Только личное оборудование, играем и пишем сценарий все вместе, своими силами. Присоединяйся!          </Cell>
+                      {startups[startupIdToSeeFullInfo].description}
+                  </Cell>
                   <Separator style={{ margin: '12px 0' }} />
                   {<Header mode="secondary">Команда</Header>}
                     <SimpleCell before={<Avatar size={48} src="https://sun9-2.userapi.com/c206816/v206816369/20ae2/VJ1i_sji5Y8.jpg" />} description="Сценарист">Саша Андреева</SimpleCell>
                     <SimpleCell before={<Avatar size={48} src="https://sun1-83.userapi.com/lZXlh-GfM3sjTZ897Pdm2IOAl6db2flAL4vvkw/-YfwHP474LU.jpg" />} description="Оператор">Анатолий Серов</SimpleCell>
                   <Separator style={{ margin: '12px 0' }} />
                   {<Header mode="secondary">Сообщество проекта</Header>}
-                    <SimpleCell before={<Avatar size={48} src="https://sun9-4.userapi.com/c856124/v856124353/1154ae/OzKHsIFwM4k.jpg" />}>RR Cinema</SimpleCell>
+                    <SimpleCell href={startups[startupIdToSeeFullInfo].vk_community_link} before={<Avatar size={48} src="https://sun9-4.userapi.com/c856124/v856124353/1154ae/OzKHsIFwM4k.jpg" />}>RR Cinema</SimpleCell>
                   <Separator style={{ margin: '12px 0' }} />
                   {<Header mode="secondary">Локация</Header>}
                   <Cell multiline asideContent={<Button before={<Icon24Place />} >Смотреть на карте</Button>}>
